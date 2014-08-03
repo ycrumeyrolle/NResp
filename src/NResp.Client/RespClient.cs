@@ -3,6 +3,7 @@
     using System;
     using System.Threading;
     using System.Threading.Tasks;
+    using NResp.Client.Commands;
 
     public class RespClient
     {
@@ -56,6 +57,42 @@
             {
                 throw new RespException(result.Response);
             }
+        }
+        
+        public async Task AppendAsync(string key, string value, CancellationToken cancellationToken)
+        {
+            var command = new AppendCommand(key, value);
+
+            var result = await this.connection.SendAsync(command, cancellationToken);
+            if (!result.Success)
+            {
+                throw new RespException(result.Response);
+            }
+        }
+
+        public Task<string> BlockingLeftPopAsync(string listName, CancellationToken cancellationToken)
+        {
+            var command = new BlpopCommand(listName);
+
+            return this.BlockingLeftPopCoreAsync(command, cancellationToken);
+        }
+
+        public Task<string> BlockingLeftPopAsync(string[] listNames, CancellationToken cancellationToken)
+        {
+            var command = new BlpopCommand(listNames);
+
+            return this.BlockingLeftPopCoreAsync(command, cancellationToken);
+        }
+
+        public async Task<string> BlockingLeftPopCoreAsync(BlpopCommand command, CancellationToken cancellationToken)
+        {
+            var result = await this.connection.SendAsync(command, cancellationToken);
+            if (!result.Success)
+            {
+                throw new RespException(result.Response);
+            }
+
+            return result.Responses[1];
         }
     }
 }

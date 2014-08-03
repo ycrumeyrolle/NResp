@@ -7,6 +7,7 @@
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+    using NResp.Client.Commands;
 
     public class RespConnection : IRespConnection
     {
@@ -63,7 +64,7 @@
                 char[] resultCode = new char[1];
 
                 await reader.ReadAsync(resultCode, 0, resultCode.Length);
-                RespResponse response = new RespResponse();
+                
                 switch (resultCode[0])
                 {
                     case '-':
@@ -79,23 +80,28 @@
                         return await ReadInteger(reader);
 
                     case '*':
+                        RespResponse response = new RespResponse();
                         response.Success = true;
                         int arrayLength = Convert.ToInt32(await reader.ReadLineAsync());
-                        if (arrayLength != 2)
+                        for (int i = 0; i < arrayLength; i++)
                         {
-                            throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, "The server reply an array of {0} elements. Expected : 2 elements", arrayLength));
+                            // length value unchecked
+                            await reader.ReadLineAsync();
+                            response.Responses.Add(await reader.ReadLineAsync());
                         }
+                        ////if (arrayLength != 2)
+                        ////{
+                        ////    throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, "The server reply an array of {0} elements. Expected : 2 elements", arrayLength));
+                        ////}
 
-                        // length value unchecked
-                        await reader.ReadLineAsync();
-                        var result = await reader.ReadLineAsync();
-                        break;
+                        ////// length value unchecked
+                        ////await reader.ReadLineAsync();
+                        ////response.Response = await reader.ReadLineAsync();
+                        return response;
 
                     default:
                         throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, "Return code '{0}' is not unknow.", resultCode[0]));
                 }
-
-                return response;
             }
         }
 

@@ -1,4 +1,4 @@
-﻿namespace NResp.Client
+﻿namespace NResp.Client.Commands
 {
     public class GetCommand : RespCommand
     {

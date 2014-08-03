@@ -1,7 +1,7 @@
-﻿namespace NRedis.Client.Tests
+﻿namespace NResp.Client.Tests
 {
     using System;
-    using NResp.Client;
+    using NResp.Client.Commands;
     using Xunit;
 
     public class RespCommandTests

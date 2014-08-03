@@ -83,19 +83,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LpopCommand.cs" />
-    <Compile Include="LPushCommand.cs" />
-    <Compile Include="GetCommand.cs" />
+    <Compile Include="Commands\FlushDbCommand.cs" />
+    <Compile Include="Commands\LRangeCommand.cs" />
+    <Compile Include="Commands\PopCommand.cs" />
+    <Compile Include="Commands\PushCommand.cs" />
+    <Compile Include="Commands\RangeCommand.cs" />
+    <Compile Include="Commands\RPopCommand.cs" />
+    <Compile Include="Commands\RPushCommand.cs" />
+    <Compile Include="Commands\SelectCommand.cs" />
+    <Compile Include="Commands\ExistsCommand.cs" />
+    <Compile Include="Commands\LpopCommand.cs" />
+    <Compile Include="Commands\LPushCommand.cs" />
+    <Compile Include="Commands\GetCommand.cs" />
     <Compile Include="IRespConnection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PingCommand.cs" />
+    <Compile Include="Commands\PingCommand.cs" />
     <Compile Include="RespConnection.cs" />
     <Compile Include="RespClient.cs" />
     <Compile Include="RespException.cs" />
     <Compile Include="RespResponse.cs" />
-    <Compile Include="RespCommand.cs" />
-    <Compile Include="BlpopCommand.cs" />
-    <Compile Include="SetCommand.cs" />
+    <Compile Include="Commands\RespCommand.cs" />
+    <Compile Include="Commands\BlpopCommand.cs" />
+    <Compile Include="Commands\GetRangeCommand.cs" />
+    <Compile Include="Commands\AppendCommand.cs" />
+    <Compile Include="Commands\DelCommand.cs" />
+    <Compile Include="Commands\SetCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

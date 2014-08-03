@@ -1,17 +1,17 @@
-﻿namespace NResp.Client
+﻿namespace NResp.Client.Commands
 {
     using System;
     using System.Linq;
 
-    public class LpopCommand : RespCommand
+    public class BlpopCommand : RespCommand
     {
-        public LpopCommand(string listName)
-            : base("LPOP", new[] { ValidateListName(listName) })
+        public BlpopCommand(string listName)
+            : base("BLPOP", new[] { ValidateListName(listName), "0" })
         {
         }
 
-        public LpopCommand(params string[] listNames)
-            : base("LPOP", ValidateListNames(listNames))
+        public BlpopCommand(params string[] listNames)
+            : base("BLPOP", ValidateListNames(listNames).Concat(new[] { "0" }).ToArray())
         {
         }
 

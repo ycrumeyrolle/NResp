@@ -2,6 +2,7 @@
 {
     using System;
     using NResp.Client;
+    using NResp.Client.Commands;
     using Xunit;
 
     public class SetCommandTests
