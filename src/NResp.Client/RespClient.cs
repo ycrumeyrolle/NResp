@@ -8,6 +8,11 @@
     {
         private readonly IRespConnection connection;
 
+        public RespClient(string hostName, int port)
+            : this(new RespConnection(hostName, port))
+        {
+        }
+
         public RespClient(IRespConnection connection)
         {
             if (connection == null)

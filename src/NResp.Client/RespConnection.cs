@@ -1,6 +1,7 @@
 ﻿namespace NResp.Client
 {
     using System;
+    using System.Globalization;
     using System.IO;
     using System.Net.Sockets;
     using System.Text;
@@ -11,27 +12,27 @@
     {
         private const string CrLf = "\r\n";
 
-        public RespConnection(string host, ushort port)
+        public RespConnection(string hostName, int port)
         {
-            if (host == null)
+            if (hostName == null)
             {
-                throw new ArgumentNullException("host");
+                throw new ArgumentNullException("hostName");
             }
 
-            this.Host = host;
+            this.HostName = hostName;
             this.Port = port;
         }
 
         /// <summary>
-        /// Gets the host;
+        /// Gets the host name;
         /// </summary>
-        public string Host { get; private set; }
+        public string HostName { get; private set; }
 
         /// <summary>
         /// Gets the port.
         /// </summary>
-        public ushort Port { get; private set; }
-        
+        public int Port { get; private set; }
+
         public async Task<RespResponse> SendAsync(RespCommand command, CancellationToken cancellationToken)
         {
             StringBuilder sb = new StringBuilder();
@@ -53,10 +54,10 @@
             }
 
             byte[] data = Encoding.ASCII.GetBytes(sb.ToString());
-            TcpClient client = new TcpClient(this.Host, this.Port);
+            TcpClient client = new TcpClient(this.HostName, this.Port);
             var stream = client.GetStream();
             await stream.WriteAsync(data, 0, data.Length, cancellationToken);
-
+            
             using (StreamReader reader = new StreamReader(stream, Encoding.ASCII, true, 8192, true))
             {
                 char[] resultCode = new char[1];
@@ -66,27 +67,73 @@
                 switch (resultCode[0])
                 {
                     case '-':
-                        response.Success = false;
-                        response.Response = await reader.ReadLineAsync();
-                        break;
+                        return await ReadError(reader);
+
                     case '$':
+                        return await ReadBulk(reader);
+                    
+                    case '+':
+                        return await ReadString(reader);
+
+                    case ':':
+                        return await ReadInteger(reader);
+
+                    case '*':
                         response.Success = true;
-                        response.Length = Convert.ToInt64(await reader.ReadLineAsync());
-                        if (response.Length != -1)
+                        int arrayLength = Convert.ToInt32(await reader.ReadLineAsync());
+                        if (arrayLength != 2)
                         {
-                            response.Response = await reader.ReadLineAsync();
+                            throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, "The server reply an array of {0} elements. Expected : 2 elements", arrayLength));
                         }
 
+                        // length value unchecked
+                        await reader.ReadLineAsync();
+                        var result = await reader.ReadLineAsync();
                         break;
-                    case '+':
-                        response.Success = true;
-                        response.Response = await reader.ReadLineAsync();
 
-                        break;
+                    default:
+                        throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, "Return code '{0}' is not unknow.", resultCode[0]));
                 }
 
                 return response;
             }
+        }
+
+        private static async Task<RespResponse> ReadInteger(StreamReader reader)
+        {
+            RespResponse response = new RespResponse();
+            response.Success = true;
+            response.Length = Convert.ToInt64(await reader.ReadLineAsync());
+            return response;
+        }
+
+        private static async Task<RespResponse> ReadString(StreamReader reader)
+        {
+            RespResponse response = new RespResponse();
+            response.Success = true;
+            response.Response = await reader.ReadLineAsync();
+            return response;
+        }
+
+        private static async Task<RespResponse> ReadBulk(StreamReader reader)
+        {
+            RespResponse response = new RespResponse();
+            response.Success = true;
+            response.Length = Convert.ToInt64(await reader.ReadLineAsync());
+            if (response.Length != -1)
+            {
+                response.Response = await reader.ReadLineAsync();
+            }
+
+            return response;
+        }
+
+        private static async Task<RespResponse> ReadError(StreamReader reader)
+        {
+            RespResponse response = new RespResponse();
+            response.Success = false;
+            response.Response = await reader.ReadLineAsync();
+            return response;
         }
     }
 }

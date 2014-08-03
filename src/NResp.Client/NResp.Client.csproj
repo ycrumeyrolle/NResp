@@ -83,6 +83,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LpopCommand.cs" />
+    <Compile Include="LPushCommand.cs" />
     <Compile Include="GetCommand.cs" />
     <Compile Include="IRespConnection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -92,6 +94,7 @@
     <Compile Include="RespException.cs" />
     <Compile Include="RespResponse.cs" />
     <Compile Include="RespCommand.cs" />
+    <Compile Include="BlpopCommand.cs" />
     <Compile Include="SetCommand.cs" />
   </ItemGroup>
   <ItemGroup>
