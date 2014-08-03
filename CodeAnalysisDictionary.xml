@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Dictionary>
+  <Words>
+    <Recognized>
+      <Word>NResp</Word>
+      <Word>Resp</Word>
+      <Word>Redis</Word>
+    </Recognized>
+
+    <DiscreteExceptions>
+      <Term>NResp</Term>
+    </DiscreteExceptions>
+
+  </Words>
+  <Acronyms>
+    <CasingExceptions>
+      <CasingExceptions>NResp</CasingExceptions>
+      <CasingExceptions>Resp</CasingExceptions>
+      <CasingExceptions>Redis</CasingExceptions>
+    </CasingExceptions>
+  </Acronyms>
+</Dictionary>
