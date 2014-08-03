@@ -66,6 +66,8 @@
     <Compile Include="RespConnectionTests.cs" />
     <Compile Include="RespClientTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RespCommandTests.cs" />
+    <Compile Include="SetCommandTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\NResp.Client\NResp.Client.csproj">

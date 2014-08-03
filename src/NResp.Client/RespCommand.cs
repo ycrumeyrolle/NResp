@@ -1,5 +1,6 @@
 ﻿namespace NResp.Client
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
 
@@ -15,6 +16,16 @@
 
         public RespCommand(string name, IList<string> arguments)
         {
+            if (name == null)
+            {
+                throw new ArgumentNullException("name");
+            }
+
+            if (arguments == null)
+            {
+                throw new ArgumentNullException("arguments");
+            }
+
             this.Name = name;
             this.Arguments = new ReadOnlyCollection<string>(arguments);
         }

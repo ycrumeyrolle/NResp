@@ -31,6 +31,17 @@
         }
 
         [Fact]
+        public async Task Set_ThrowException()
+        {
+            this.connection
+                .Setup(c => c.SendAsync(It.IsAny<RespCommand>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new RespResponse { Success = false });
+            RespClient client = new RespClient(this.connection.Object);
+
+            await Assert.ThrowsAsync<RespException>(() => client.SetAsync("key", "value", CancellationToken.None));
+        }
+
+        [Fact]
         public async Task Set_WithExpiration()
         {
             this.connection
@@ -67,6 +78,17 @@
             var result = await client.GetAsync("test", CancellationToken.None);
 
             Assert.Null(result);
+        }
+
+        [Fact]
+        public async Task Get_ThrowException()
+        {
+            this.connection
+                .Setup(c => c.SendAsync(It.IsAny<RespCommand>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new RespResponse { Success = false });
+            RespClient client = new RespClient(this.connection.Object);
+
+            await Assert.ThrowsAsync<RespException>(() => client.GetAsync("test", CancellationToken.None));
         }
     }
 }
